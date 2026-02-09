@@ -111,6 +111,7 @@ export const BottomNav = ({ activePage }: BottomNavProps): JSX.Element => {
           {[
             { name: "Broadcast", path: "/broadcast" },
             { name: "Messages", path: "/messages" },
+            { name: "Home", path: "/dashboard" },
             { name: "New launches", path: "/launches" },
             { name: "Communities", path: "/communities" },
           ].map((tab) => (

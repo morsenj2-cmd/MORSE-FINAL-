@@ -35,11 +35,11 @@ export const LaunchesPage = (): JSX.Element => {
   );
 
   const toggleTag = (tagId: string) => {
-    setSelectedTagIds(prev => 
-      prev.includes(tagId) 
-        ? prev.filter(id => id !== tagId)
-        : [...prev, tagId]
-    );
+    setSelectedTagIds(prev => {
+      if (prev.includes(tagId)) return prev.filter(id => id !== tagId);
+      if (prev.length >= 3) return prev;
+      return [...prev, tagId];
+    });
   };
 
   const handleCreateLaunch = async () => {

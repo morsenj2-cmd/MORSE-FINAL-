@@ -90,7 +90,7 @@ export const BroadcastPage = (): JSX.Element => {
   };
 
   const addTag = (tagName: string) => {
-    if (!selectedTags.includes(tagName)) {
+    if (!selectedTags.includes(tagName) && selectedTags.length < 3) {
       setSelectedTags(prev => [...prev, tagName]);
     }
     setTagSearch("");
@@ -232,7 +232,7 @@ export const BroadcastPage = (): JSX.Element => {
                 </div>
 
                 <div>
-                  <label className="text-gray-400 text-sm mb-2 block">Target audience tags (minimum 20)</label>
+                  <label className="text-gray-400 text-sm mb-2 block">Target audience tags (max 3)</label>
                   <div className="relative">
                     <Input
                       type="text"
@@ -275,7 +275,7 @@ export const BroadcastPage = (): JSX.Element => {
                       ))}
                     </div>
                   )}
-                  <p className="text-gray-500 text-xs mt-1">{selectedTags.length}/20 tags selected</p>
+                  <p className="text-gray-500 text-xs mt-1">{selectedTags.length}/3 tags selected</p>
                 </div>
               </div>
 
@@ -315,7 +315,7 @@ export const BroadcastPage = (): JSX.Element => {
               <Button 
                 className="w-full bg-teal-700 hover:bg-teal-600 text-white" 
                 data-testid="button-send-broadcast"
-                disabled={sendBroadcast.isPending || selectedTags.length < 1 || !message.trim()}
+                disabled={sendBroadcast.isPending || selectedTags.length < 1 || !message.trim() || !selectedCity}
                 onClick={handleSendBroadcast}
               >
                 <Send className="w-4 h-4 mr-2" />

@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useTags, useCurrentUser, useUpdateUser } from "@/lib/api";
 import { Check, X, MapPin } from "lucide-react";
 
-const MIN_TAGS = 20;
+const MIN_TAGS = 5;
+const MAX_TAGS = 5;
 
 const INDIAN_CITIES = [
   "Mumbai, Maharashtra", "Delhi, NCR", "Bangalore, Karnataka", "Hyderabad, Telangana", "Chennai, Tamil Nadu",
@@ -45,11 +46,11 @@ export const OnboardingTagsPage = (): JSX.Element => {
   const isEditMode = currentUser?.onboardingComplete && currentUser?.tags?.length >= MIN_TAGS;
 
   const toggleTag = (tagId: string) => {
-    setSelectedTagIds(prev =>
-      prev.includes(tagId)
-        ? prev.filter(id => id !== tagId)
-        : [...prev, tagId]
-    );
+    setSelectedTagIds(prev => {
+      if (prev.includes(tagId)) return prev.filter(id => id !== tagId);
+      if (prev.length >= MAX_TAGS) return prev;
+      return [...prev, tagId];
+    });
   };
 
   const handleComplete = async () => {
@@ -95,7 +96,7 @@ export const OnboardingTagsPage = (): JSX.Element => {
           <p className="text-gray-400 mb-2 text-sm sm:text-base" data-testid="text-onboarding-subtitle">
             {isEditMode 
               ? "Update your tags and location preferences."
-              : `Select at least ${MIN_TAGS} tags that describe your career and interests.`}
+              : `Select exactly ${MAX_TAGS} tags that describe your career and interests.`}
           </p>
           {!isEditMode && (
             <p className="text-gray-500 text-sm">
@@ -171,14 +172,14 @@ export const OnboardingTagsPage = (): JSX.Element => {
         <div className="bg-[#2a2a2a] rounded-lg p-4 mb-6 border border-gray-700">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-400">Selected tags</span>
-            <span className={`font-semibold ${selectedTagIds.length >= MIN_TAGS ? "text-teal-400" : "text-yellow-400"}`} data-testid="text-tag-count">
-              {selectedTagIds.length} / {MIN_TAGS} minimum
+            <span className={`font-semibold ${selectedTagIds.length >= MAX_TAGS ? "text-teal-400" : "text-yellow-400"}`} data-testid="text-tag-count">
+              {selectedTagIds.length} / {MAX_TAGS}
             </span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div
-              className={`h-2 rounded-full transition-all duration-300 ${selectedTagIds.length >= MIN_TAGS ? "bg-teal-500" : "bg-yellow-500"}`}
-              style={{ width: `${Math.min((selectedTagIds.length / MIN_TAGS) * 100, 100)}%` }}
+              className={`h-2 rounded-full transition-all duration-300 ${selectedTagIds.length >= MAX_TAGS ? "bg-teal-500" : "bg-yellow-500"}`}
+              style={{ width: `${Math.min((selectedTagIds.length / MAX_TAGS) * 100, 100)}%` }}
               data-testid="progress-tags"
             />
           </div>

@@ -189,7 +189,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFeedPosts(userId: string): Promise<(Post & { author: User })[]> {
-    return this.getPosts(50);
+    const userTagRecords = await db.select().from(userTags).where(eq(userTags.userId, userId));
+    const userTagIds = userTagRecords.map(ut => ut.tagId);
+
+    const allPosts = await db
+      .select({ post: posts, author: users })
+      .from(posts)
+      .innerJoin(users, eq(posts.authorId, users.id))
+      .orderBy(desc(posts.createdAt))
+      .limit(100);
+
+    if (userTagIds.length === 0) {
+      return allPosts.map(r => ({ ...r.post, author: r.author }));
+    }
+
+    const postsWithRelevance = await Promise.all(
+      allPosts.map(async (r) => {
+        const postTagRecords = await db.select().from(postTags).where(eq(postTags.postId, r.post.id));
+        const postTagIds = postTagRecords.map(pt => pt.tagId);
+        const matchingTags = postTagIds.filter(tagId => userTagIds.includes(tagId)).length;
+        return { ...r.post, author: r.author, matchingTags };
+      })
+    );
+
+    postsWithRelevance.sort((a, b) => b.matchingTags - a.matchingTags || new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+
+    return postsWithRelevance;
   }
 
   async createPost(insertPost: InsertPost): Promise<Post> {
@@ -762,24 +787,34 @@ export class DatabaseStorage implements IStorage {
     }
 
     const usersWithMatchingTags = await db
-      .select({ userId: userTags.userId, userCity: users.city })
+      .select({ userId: userTags.userId, tagId: userTags.tagId, userCity: users.city })
       .from(userTags)
       .innerJoin(users, eq(userTags.userId, users.id))
       .where(inArray(userTags.tagId, matchingTagIds));
 
-    let eligibleUserIds = Array.from(new Set(usersWithMatchingTags.map(u => u.userId)))
-      .filter(id => id !== senderId);
-
-    if (city) {
-      const normalizedCity = city.toLowerCase().trim();
-      const usersInCity = usersWithMatchingTags.filter(u => 
-        u.userCity && u.userCity.toLowerCase().trim() === normalizedCity
-      );
-      eligibleUserIds = Array.from(new Set(usersInCity.map(u => u.userId)))
-        .filter(id => id !== senderId);
+    const userTagCounts = new Map<string, { count: number; city: string | null }>();
+    for (const row of usersWithMatchingTags) {
+      const existing = userTagCounts.get(row.userId);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        userTagCounts.set(row.userId, { count: 1, city: row.userCity });
+      }
     }
 
-    // Send broadcast as DM to each eligible recipient
+    const eligibleUserIds: string[] = [];
+    if (!city) {
+      return { recipientCount: 0 };
+    }
+
+    const normalizedCity = city.toLowerCase().trim();
+    Array.from(userTagCounts.entries()).forEach(([uid, data]) => {
+      if (uid === senderId) return;
+      if (data.count < 3) return;
+      if (!data.city || data.city.toLowerCase().trim() !== normalizedCity) return;
+      eligibleUserIds.push(uid);
+    });
+
     for (const recipientId of eligibleUserIds) {
       const conversation = await this.getOrCreateConversation(senderId, recipientId);
       await this.sendMessage(conversation.id, senderId, `[Broadcast] ${content}`);

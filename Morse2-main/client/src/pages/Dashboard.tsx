@@ -38,7 +38,7 @@ export const Dashboard = (): JSX.Element => {
   const declineFollow = useDeclineFollow();
 
   const handleCreatePost = async () => {
-    if (!newPostContent.trim()) return;
+    if (!newPostContent.trim() || selectedPostTags.length === 0) return;
     
     await createPost.mutateAsync({
       content: newPostContent,
@@ -58,11 +58,11 @@ export const Dashboard = (): JSX.Element => {
   );
 
   const togglePostTag = (tagId: string) => {
-    setSelectedPostTags(prev =>
-      prev.includes(tagId)
-        ? prev.filter(id => id !== tagId)
-        : [...prev, tagId]
-    );
+    setSelectedPostTags(prev => {
+      if (prev.includes(tagId)) return prev.filter(id => id !== tagId);
+      if (prev.length >= 3) return prev;
+      return [...prev, tagId];
+    });
   };
 
   const handleLike = async (postId: string) => {
@@ -273,7 +273,7 @@ export const Dashboard = (): JSX.Element => {
                     <div>
                       <label className="text-gray-300 text-sm mb-2 flex items-center gap-2">
                         <Tag className="w-4 h-4" />
-                        Add tags (helps others discover your post)
+                        Add tags (required, max 3)
                       </label>
                       {selectedPostTags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-2">
@@ -331,7 +331,7 @@ export const Dashboard = (): JSX.Element => {
                     
                     <Button 
                       onClick={handleCreatePost}
-                      disabled={!newPostContent.trim() || createPost.isPending}
+                      disabled={!newPostContent.trim() || createPost.isPending || selectedPostTags.length === 0}
                       data-testid="button-submit-post"
                       className="w-full bg-teal-700 hover:bg-teal-600"
                     >
@@ -464,7 +464,7 @@ export const Dashboard = (): JSX.Element => {
             <div>
               <label className="text-gray-300 text-sm mb-2 flex items-center gap-2">
                 <Tag className="w-4 h-4" />
-                Add tags (helps others discover your post)
+                Add tags (required, max 3)
               </label>
               {selectedPostTags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -522,7 +522,7 @@ export const Dashboard = (): JSX.Element => {
             
             <Button 
               onClick={handleCreatePost}
-              disabled={!newPostContent.trim() || createPost.isPending}
+              disabled={!newPostContent.trim() || createPost.isPending || selectedPostTags.length === 0}
               data-testid="button-submit-post"
               className="w-full bg-teal-700 hover:bg-teal-600"
             >
