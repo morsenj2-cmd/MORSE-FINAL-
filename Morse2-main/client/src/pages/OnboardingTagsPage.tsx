@@ -75,8 +75,7 @@ export const OnboardingTagsPage = (): JSX.Element => {
     if (isEditMode) {
       setLocation("/profile");
     } else {
-      // Use replace to prevent back button going to onboarding after completing
-      setLocation("/dashboard", { replace: true });
+      setLocation("/profile", { replace: true });
     }
   };
 
@@ -201,7 +200,7 @@ export const OnboardingTagsPage = (): JSX.Element => {
             <p className="text-gray-400" data-testid="text-no-tags">No tags available yet. Please check back later.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {uniqueTags.map((tag: any) => {
               const isSelected = selectedTagIds.includes(tag.id);
               return (
@@ -209,18 +208,18 @@ export const OnboardingTagsPage = (): JSX.Element => {
                   key={tag.id}
                   onClick={() => toggleTag(tag.id)}
                   data-testid={`button-tag-${tag.id}`}
-                  className={`p-3 rounded-lg border transition-all duration-200 text-left ${
+                  className={`p-2 sm:p-3 rounded-lg border transition-all duration-200 text-left ${
                     isSelected
                       ? "bg-teal-700 border-teal-500 text-white"
                       : "bg-[#2a2a2a] border-gray-600 text-gray-300 hover:border-gray-400"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{tag.name}</span>
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="font-medium text-sm sm:text-base truncate">{tag.name}</span>
                     {isSelected ? (
-                      <Check className="w-4 h-4 text-teal-300" />
+                      <Check className="w-4 h-4 text-teal-300 flex-shrink-0" />
                     ) : (
-                      <div className="w-4 h-4 border border-gray-500 rounded" />
+                      <div className="w-4 h-4 border border-gray-500 rounded flex-shrink-0" />
                     )}
                   </div>
                   {tag.description && (
