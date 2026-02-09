@@ -67,6 +67,7 @@ Preferred communication style: Simple, everyday language.
   - `conversations`, `messages` — direct messaging
   - `threads`, `thread_comments` — community discussion threads
   - `broadcasts`, `broadcast_tags`, `broadcast_recipients` — targeted broadcasts
+  - `blog_posts` — admin-only blog posts for SEO (restricted to prayagbiju78@gmail.com)
 
 ### Tag-Driven Logic (Critical Design Principle)
 Tags are not a feature — they are the underlying graph of the platform:
@@ -78,7 +79,9 @@ Tags are not a feature — they are the underlying graph of the platform:
 
 ### Key Pages
 - `/` — Landing page (public, dark theme with spiral)
-- `/about`, `/pricing`, `/blog` — Public info pages
+- `/about`, `/pricing` — Public info pages
+- `/blog` — Blog listing (public); admin (prayagbiju78@gmail.com) can create/delete posts
+- `/blog/:slug` — Individual blog post detail page (public)
 - `/onboarding/tags` — Tag selection (min 20) + city selection during onboarding
 - `/dashboard` — Main feed with post creation, search, sidebar with communities/launches/follow requests
 - `/broadcast` — Send targeted broadcasts by tags and city
