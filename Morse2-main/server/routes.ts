@@ -64,7 +64,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const userTags = await storage.getUserTags(user.id);
-      res.json({ ...user, tags: userTags });
+      const followers = await storage.getFollowers(user.id);
+      const following = await storage.getFollowing(user.id);
+      res.json({ ...user, tags: userTags, followersCount: followers.length, followingCount: following.length });
     } catch (error: any) {
       console.error("Error in /api/me:", error);
       res.status(500).json({ message: error.message });

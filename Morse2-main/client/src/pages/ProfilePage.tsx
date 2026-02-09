@@ -106,8 +106,14 @@ export const ProfilePage = (): JSX.Element => {
               </div>
             )}
             
-            <p className="text-gray-400 text-sm mt-2" data-testid="text-user-bio">
-              {currentUser?.bio || "Biography shows where they work. Number of followers also shown here"}
+            {currentUser?.bio && (
+              <p className="text-gray-400 text-sm mt-2" data-testid="text-user-bio">
+                {currentUser.bio}
+              </p>
+            )}
+
+            <p className="text-gray-400 text-sm mt-2" data-testid="text-followers-count">
+              {currentUser?.followersCount || 0} followers
             </p>
 
             {currentUser?.tags?.length > 0 && (

@@ -89,8 +89,14 @@ export const UserProfilePage = (): JSX.Element => {
             <h1 className="text-white text-2xl font-bold" data-testid="text-user-name">
               {displayName}
             </h1>
-            <p className="text-gray-400 text-sm mt-1" data-testid="text-user-bio">
-              {profileUser.bio || "Biography includes number of followers"}
+            {profileUser.bio && (
+              <p className="text-gray-400 text-sm mt-1" data-testid="text-user-bio">
+                {profileUser.bio}
+              </p>
+            )}
+
+            <p className="text-gray-400 text-sm mt-1" data-testid="text-followers-count">
+              {profileUser.followersCount || 0} followers
             </p>
           </div>
 
