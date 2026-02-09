@@ -231,7 +231,7 @@ export const LaunchesPage = (): JSX.Element => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 sm:p-8">
+      <div className="flex-1 p-4 sm:p-8 pb-20">
         {isLoading ? (
           <div className="text-center py-12">
             <div className="animate-spin w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full mx-auto"></div>

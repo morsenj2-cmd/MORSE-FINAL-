@@ -817,6 +817,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { content } = req.body;
       if (!content) return res.status(400).json({ message: "Content required" });
 
+      const conv = await storage.getConversation(req.params.id);
+      if (conv) {
+        const otherUserId = conv.participant1Id === user.id ? conv.participant2Id : conv.participant1Id;
+        const followStatus1 = await storage.getFollowStatus(user.id, otherUserId);
+        const followStatus2 = await storage.getFollowStatus(otherUserId, user.id);
+        const areFriends = followStatus1 === "accepted" || followStatus2 === "accepted";
+
+        if (!areFriends) {
+          const existingMessages = await storage.getConversationMessages(req.params.id);
+          const senderMessages = existingMessages.filter((m: any) => m.senderId === user.id);
+          if (senderMessages.length >= 1) {
+            return res.status(403).json({ message: "You can only send 1 message before your friend request is accepted." });
+          }
+        }
+      }
+
       const message = await storage.sendMessage(req.params.id, user.id, content);
       res.json(message);
     } catch (error: any) {

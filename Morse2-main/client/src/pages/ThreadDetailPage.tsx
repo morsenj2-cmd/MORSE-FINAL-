@@ -62,7 +62,7 @@ export const ThreadDetailPage = (): JSX.Element => {
         <div className="flex-1"></div>
       </header>
 
-      <div className="flex-1 p-4 sm:p-8 overflow-y-auto">
+      <div className="flex-1 p-4 sm:p-8 pb-20 overflow-y-auto">
         <div className="max-w-3xl mx-auto">
           <Link href={`/communities/${thread.communityId}`}>
             <Button variant="ghost" className="text-gray-400 hover:text-white mb-4 text-sm" data-testid="button-back">

@@ -33,7 +33,7 @@ export const SearchResultsPage = (): JSX.Element => {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Search users..."
+              placeholder="Search by name or tag..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleSearch}
@@ -47,7 +47,7 @@ export const SearchResultsPage = (): JSX.Element => {
         <div className="w-32"></div>
       </header>
 
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 pb-20">
         <div className="max-w-3xl mx-auto">
           <Link href="/dashboard">
             <Button variant="ghost" className="text-gray-400 hover:text-white mb-4" data-testid="button-back">
@@ -70,7 +70,7 @@ export const SearchResultsPage = (): JSX.Element => {
               <Search className="w-12 h-12 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-400 mb-2" data-testid="text-search-prompt">Enter at least 2 characters to search</p>
               <p className="text-gray-500 text-sm">
-                Search for users by name or username
+                Search for users by name, username, or tags
               </p>
             </div>
           ) : searchResults.length === 0 ? (

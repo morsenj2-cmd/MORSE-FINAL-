@@ -80,7 +80,7 @@ export const ProfilePage = (): JSX.Element => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 sm:p-8">
+      <div className="flex-1 p-4 sm:p-8 pb-20">
         {/* Profile Header */}
         <div className="bg-[#2a2a2a] rounded-lg p-4 sm:p-6 border border-gray-700 max-w-4xl mx-auto">
           <h2 className="text-white text-lg sm:text-xl font-semibold text-center mb-4 sm:mb-6" data-testid="text-your-profile-title">

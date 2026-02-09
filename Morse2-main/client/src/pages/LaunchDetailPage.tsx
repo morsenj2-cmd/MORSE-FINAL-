@@ -67,7 +67,7 @@ export const LaunchDetailPage = (): JSX.Element => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 flex justify-center">
+      <div className="flex-1 p-8 pb-20 flex justify-center">
         <div className="max-w-2xl w-full">
           {/* Upvote Section */}
           <div className="flex justify-between items-start mb-4">

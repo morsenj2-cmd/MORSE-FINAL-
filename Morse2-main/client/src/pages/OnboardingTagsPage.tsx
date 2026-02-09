@@ -27,6 +27,16 @@ export const OnboardingTagsPage = (): JSX.Element => {
   const { data: tags = [], isLoading: tagsLoading } = useTags();
   const updateUser = useUpdateUser();
 
+  const uniqueTags = useMemo(() => {
+    const seen = new Set<string>();
+    return tags.filter((t: any) => {
+      const lower = t.name.toLowerCase().trim();
+      if (seen.has(lower)) return false;
+      seen.add(lower);
+      return true;
+    });
+  }, [tags]);
+
   const filteredCities = useMemo(() => {
     if (!citySearch) return INDIAN_CITIES.slice(0, 10);
     return INDIAN_CITIES.filter(city => 
@@ -186,13 +196,13 @@ export const OnboardingTagsPage = (): JSX.Element => {
         </div>
 
         {/* Tags Grid */}
-        {tags.length === 0 ? (
+        {uniqueTags.length === 0 ? (
           <div className="bg-[#2a2a2a] rounded-lg p-8 border border-gray-700 text-center">
             <p className="text-gray-400" data-testid="text-no-tags">No tags available yet. Please check back later.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {tags.map((tag: any) => {
+            {uniqueTags.map((tag: any) => {
               const isSelected = selectedTagIds.includes(tag.id);
               return (
                 <button

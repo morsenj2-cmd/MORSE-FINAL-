@@ -82,6 +82,7 @@ export interface IStorage {
   getUserActivityById(userId: string): Promise<any[]>;
   
   // Messaging
+  getConversation(conversationId: string): Promise<Conversation | undefined>;
   getConversations(userId: string): Promise<any[]>;
   getOrCreateConversation(userId1: string, userId2: string): Promise<Conversation>;
   getConversationMessages(conversationId: string): Promise<any[]>;
@@ -550,13 +551,30 @@ export class DatabaseStorage implements IStorage {
     return comment;
   }
 
-  // User search
   async searchUsers(query: string): Promise<User[]> {
-    const allUsers = await db.select().from(users);
-    return allUsers.filter(u => 
-      u.username.toLowerCase().includes(query.toLowerCase()) ||
-      (u.displayName && u.displayName.toLowerCase().includes(query.toLowerCase()))
-    ).slice(0, 10);
+    const pattern = `%${query}%`;
+
+    const tagMatchedUserIds = await db
+      .selectDistinct({ userId: userTags.userId })
+      .from(userTags)
+      .innerJoin(tags, eq(userTags.tagId, tags.id))
+      .where(sql`${tags.name} ILIKE ${pattern}`);
+
+    const tagUserIds = tagMatchedUserIds.map(r => r.userId);
+
+    const nameResults = await db
+      .select()
+      .from(users)
+      .where(
+        or(
+          sql`${users.username} ILIKE ${pattern}`,
+          sql`${users.displayName} ILIKE ${pattern}`,
+          tagUserIds.length > 0 ? inArray(users.id, tagUserIds) : sql`false`
+        )
+      )
+      .limit(20);
+
+    return nameResults;
   }
 
   // User activity
@@ -633,6 +651,14 @@ export class DatabaseStorage implements IStorage {
     }));
     
     return result;
+  }
+
+  async getConversation(conversationId: string): Promise<Conversation | undefined> {
+    const [conv] = await db
+      .select()
+      .from(conversations)
+      .where(eq(conversations.id, conversationId));
+    return conv;
   }
 
   async getOrCreateConversation(userId1: string, userId2: string): Promise<Conversation> {

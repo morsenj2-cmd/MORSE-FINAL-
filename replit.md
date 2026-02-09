@@ -14,8 +14,15 @@ Preferred communication style: Simple, everyday language.
 - **Theme**: Dark theme (black/dark gray backgrounds) with purple 3D spiral decorative element on public pages
 - **Fonts**: DM Sans for headings, Arimo for logo
 - **Tags are sacred**: Tags are the core system — every entity (users, posts, communities, broadcasts, launches) MUST have tags. Tags are never visible to other users and never block access; they only influence ranking and relevance. If anything can exist without tags, that is considered a bug.
-- **Minimum 20 tags** required during user onboarding
+- **Exactly 5 tags** required during user onboarding (min/max 5)
+- **Max 3 tags** for posts, launches, and broadcasts (mandatory)
+- **Tag deduplication**: Client-side dedup using useMemo ensures no repeated tags shown
 - **India-focused**: Cities list is Indian cities, SEO targets Indian audience
+- **Search**: Users can be discovered by name, username, OR tags
+- **Messaging limit**: Users can send 1 message before friend request is accepted, unlimited after
+- **Post content policy**: Warning shown in post creation dialog - posts are only for experiences/journeys, not personal branding or memes
+- **Feed ranking**: Posts ranked by tag relevance (matching tags with viewer), then recency
+- **Broadcast targeting**: Requires min 3 matching tags AND matching city (both mandatory)
 
 ## System Architecture
 

@@ -115,7 +115,7 @@ export const BroadcastPage = (): JSX.Element => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:flex-row">
+      <div className="flex-1 flex flex-col lg:flex-row pb-20">
         {/* Left Sidebar - Hidden on mobile */}
         <aside className="hidden lg:block w-64 p-4 space-y-6">
           <div className="bg-[#2a2a2a] rounded-lg p-4">

@@ -115,7 +115,7 @@ export const CommunityDetailPage = (): JSX.Element => {
         </Dialog>
       </header>
 
-      <div className="flex-1 p-4 sm:p-8">
+      <div className="flex-1 p-4 sm:p-8 pb-20">
         <div className="max-w-4xl mx-auto">
           <Link href="/communities">
             <Button variant="ghost" className="text-gray-400 hover:text-white mb-4 text-sm" data-testid="button-back">

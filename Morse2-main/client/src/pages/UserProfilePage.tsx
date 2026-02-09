@@ -75,7 +75,7 @@ export const UserProfilePage = (): JSX.Element => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 pb-20">
         {/* Profile Header */}
         <div className="bg-[#2a2a2a] rounded-lg p-6 border border-gray-700 max-w-4xl mx-auto">
           <div className="text-center mb-6">

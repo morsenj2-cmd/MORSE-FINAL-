@@ -87,7 +87,7 @@ export const Dashboard = (): JSX.Element => {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Search users..."
+              placeholder="Search by name or tag..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -134,7 +134,7 @@ export const Dashboard = (): JSX.Element => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:flex-row">
+      <div className="flex-1 flex flex-col lg:flex-row pb-20">
         {/* Left Sidebar - Hidden on mobile, shown on large screens */}
         <aside className="hidden lg:block w-64 p-4 space-y-6">
           {/* Follow Requests */}
@@ -440,6 +440,7 @@ export const Dashboard = (): JSX.Element => {
           <DialogHeader>
             <DialogTitle className="text-white" data-testid="text-create-post-title">Create a post</DialogTitle>
           </DialogHeader>
+          <p className="text-yellow-400/80 text-xs bg-yellow-400/10 rounded px-3 py-2 border border-yellow-400/20">Posts are only for sharing experiences or journeys. Personal branding and memes are not allowed in posts. Communities can be used for that purpose with zero restrictions.</p>
           <div className="space-y-4">
             <Textarea
               placeholder="What's on your mind?"
