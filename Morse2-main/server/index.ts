@@ -5,6 +5,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedTagsIfEmpty } from "./storage";
+import { pool } from "./db";
 import path from "path";
 
 const app = express();
@@ -51,6 +52,26 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS blog_posts (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        author_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        slug TEXT NOT NULL UNIQUE,
+        content TEXT NOT NULL,
+        excerpt TEXT,
+        cover_image_url TEXT,
+        published BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    console.log("blog_posts table ensured");
+  } catch (err) {
+    console.error("Could not ensure blog_posts table:", err);
+  }
+
   // Seed default tags if database is empty
   await seedTagsIfEmpty();
   
