@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { useState, useEffect, useCallback } from "react";
 import { ClerkProvider } from "@clerk/clerk-react";
@@ -9,15 +8,42 @@ import "./index.css";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!PUBLISHABLE_KEY) {
-  console.error("Missing Clerk Publishable Key");
+function canUseClerk(): boolean {
+  if (!PUBLISHABLE_KEY) return false;
+
+  try {
+    const parts = PUBLISHABLE_KEY.split("_");
+    const base64 = parts.slice(2).join("_");
+    const decoded = atob(base64).replace(/\$$/, "");
+    const appDomain = decoded.replace(/^clerk\./, "");
+
+    const hostname = window.location.hostname;
+
+    if (hostname === appDomain || hostname.endsWith("." + appDomain))
+      return true;
+
+    if (hostname === "localhost" || hostname === "127.0.0.1") return true;
+
+    if (
+      hostname.includes(".replit.") ||
+      hostname.includes(".repl.co") ||
+      hostname.includes(".kirk.") ||
+      hostname.includes(".picard.") ||
+      hostname.includes(".pike.")
+    )
+      return true;
+
+    return false;
+  } catch {
+    return true;
+  }
 }
 
 function Root() {
-  const [clerkEnabled, setClerkEnabled] = useState(!!PUBLISHABLE_KEY);
+  const [clerkEnabled, setClerkEnabled] = useState(canUseClerk);
 
   const disableClerk = useCallback(() => {
-    console.warn("Clerk failed to initialize. Running without authentication.");
+    console.warn("Clerk disabled. Running without authentication.");
     setClerkEnabled(false);
   }, []);
 
