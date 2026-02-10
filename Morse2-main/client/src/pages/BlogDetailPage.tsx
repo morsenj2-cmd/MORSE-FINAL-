@@ -1,21 +1,36 @@
 import { Header } from "@/components/Header";
+import { PublicHeader } from "@/components/PublicHeader";
 import { BottomNav } from "@/components/BottomNav";
+import { ClerkGuard } from "@/components/ErrorBoundary";
 import { useBlogPost } from "@/lib/api";
 import { useRoute, Link } from "wouter";
 import { useUser } from "@clerk/clerk-react";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { format } from "date-fns";
 
-export const BlogDetailPage = (): JSX.Element => {
+function AuthAwareHeader() {
+  const { isSignedIn } = useUser();
+  if (isSignedIn) return null;
+  return <Header />;
+}
+
+function AdminNav() {
   const { isSignedIn, user } = useUser();
   const isAdmin = user?.primaryEmailAddress?.emailAddress === "prayagbiju78@gmail.com";
+  if (!isSignedIn || !isAdmin) return null;
+  return <BottomNav activePage="/blog" />;
+}
+
+export const BlogDetailPage = (): JSX.Element => {
   const [, params] = useRoute("/blog/:slug");
   const slug = params?.slug || "";
   const { data: post, isLoading } = useBlogPost(slug);
 
   return (
     <div className="bg-black w-full min-h-screen flex flex-col pb-20">
-      {!isSignedIn && <Header />}
+      <ClerkGuard fallback={<PublicHeader />}>
+        <AuthAwareHeader />
+      </ClerkGuard>
 
       <main className="flex-1 relative px-4 sm:px-8 py-8 sm:py-12">
         <div className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
@@ -103,7 +118,9 @@ export const BlogDetailPage = (): JSX.Element => {
           )}
         </div>
       </main>
-      {isSignedIn && isAdmin && <BottomNav activePage="/blog" />}
+      <ClerkGuard>
+        <AdminNav />
+      </ClerkGuard>
     </div>
   );
 };
