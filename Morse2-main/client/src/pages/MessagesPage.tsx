@@ -10,6 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 export const MessagesPage = (): JSX.Element => {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
+  const [sendError, setSendError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: currentUser } = useCurrentUser();
@@ -23,12 +24,16 @@ export const MessagesPage = (): JSX.Element => {
 
   const handleSendMessage = async () => {
     if (!messageInput.trim() || !selectedConversationId) return;
-    
-    await sendMessage.mutateAsync({
-      conversationId: selectedConversationId,
-      content: messageInput.trim(),
-    });
-    setMessageInput("");
+    setSendError("");
+    try {
+      await sendMessage.mutateAsync({
+        conversationId: selectedConversationId,
+        content: messageInput.trim(),
+      });
+      setMessageInput("");
+    } catch (err: any) {
+      setSendError(err?.message || "Failed to send message");
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -177,6 +182,9 @@ export const MessagesPage = (): JSX.Element => {
               </div>
 
               <div className="flex-shrink-0 p-3 sm:p-4 border-t border-gray-800 bg-[#1a1a1a]">
+                {sendError && (
+                  <p className="text-red-400 text-sm mb-2 px-1">{sendError}</p>
+                )}
                 <div className="flex gap-2 sm:gap-3">
                   <Input
                     type="text"

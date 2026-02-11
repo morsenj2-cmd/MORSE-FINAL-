@@ -19,7 +19,7 @@ Preferred communication style: Simple, everyday language.
 - **Tag deduplication**: Client-side dedup using useMemo ensures no repeated tags shown
 - **India-focused**: Cities list is Indian cities, SEO targets Indian audience
 - **Search**: Users can be discovered by name, username, OR tags
-- **Messaging limit**: Users can send 1 message before friend request is accepted, unlimited after
+- **Messaging limit**: Users cannot message other users until their connection request is accepted, unlimited after
 - **Post content policy**: Warning shown in post creation dialog - posts are only for experiences/journeys, not personal branding or memes
 - **Feed ranking**: Posts ranked by tag relevance (matching tags with viewer), then recency
 - **Broadcast targeting**: Requires min 3 matching tags AND matching city (both mandatory)

@@ -839,11 +839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const areFriends = followStatus1 === "accepted" || followStatus2 === "accepted";
 
         if (!areFriends) {
-          const existingMessages = await storage.getConversationMessages(req.params.id);
-          const senderMessages = existingMessages.filter((m: any) => m.senderId === user.id);
-          if (senderMessages.length >= 1) {
-            return res.status(403).json({ message: "You can only send 1 message before your friend request is accepted." });
-          }
+          return res.status(403).json({ message: "You can only message users after your connection request is accepted." });
         }
       }
 
