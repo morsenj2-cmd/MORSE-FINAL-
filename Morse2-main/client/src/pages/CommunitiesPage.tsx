@@ -37,7 +37,7 @@ export const CommunitiesPage = (): JSX.Element => {
     setSelectedTagIds(prev =>
       prev.includes(tagId)
         ? prev.filter(id => id !== tagId)
-        : [...prev, tagId]
+        : prev.length >= 5 ? prev : [...prev, tagId]
     );
   };
 
@@ -101,7 +101,7 @@ export const CommunitiesPage = (): JSX.Element => {
               {/* Tag Selection */}
               <div>
                 <label className="text-white text-sm font-medium mb-2 block">
-                  Tags <span className="text-red-400">*required</span>
+                  Tags ({selectedTagIds.length}/5) <span className="text-red-400">*required</span>
                 </label>
                 <Input
                   placeholder="Search tags..."
@@ -167,7 +167,7 @@ export const CommunitiesPage = (): JSX.Element => {
                 {createCommunity.isPending ? "Creating..." : "Create Community"}
               </Button>
               {selectedTagIds.length === 0 && (
-                <p className="text-red-400 text-sm text-center">Please select at least one tag</p>
+                <p className="text-red-400 text-sm text-center">Please select at least one tag (max 5)</p>
               )}
             </div>
           </DialogContent>
@@ -230,6 +230,7 @@ export const CommunitiesPage = (): JSX.Element => {
                 <div className="space-y-3">
                   {allCommunities
                     .filter((c: any) => !userCommunityIds.includes(c.id))
+                    .sort((a: any, b: any) => (b.tagOverlapCount || 0) - (a.tagOverlapCount || 0))
                     .map((community: any) => (
                       <div key={community.id} className="bg-[#2a2a2a] rounded-lg p-4 border border-gray-700" data-testid={`card-discover-community-${community.id}`}>
                         <div className="flex items-center gap-3">

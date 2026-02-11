@@ -215,8 +215,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Communities
   app.get("/api/communities", async (req: Request, res: Response) => {
     try {
-      const communities = await storage.getCommunities();
-      res.json(communities);
+      const allCommunities = await storage.getCommunities();
+
+      let userTagIds: string[] = [];
+      try {
+        const { userId } = getAuth(req);
+        if (userId) {
+          const user = await storage.getUserByClerkId(userId);
+          if (user) {
+            const uTags = await storage.getUserTags(user.id);
+            userTagIds = uTags.map((t: any) => t.id);
+          }
+        }
+      } catch {}
+
+      if (userTagIds.length === 0) {
+        return res.json(allCommunities);
+      }
+
+      const communitiesWithOverlap = await Promise.all(
+        allCommunities.map(async (community: any) => {
+          const cTags = await storage.getCommunityTags(community.id);
+          const cTagIds = cTags.map((t: any) => t.id);
+          const overlapCount = cTagIds.filter((id: string) => userTagIds.includes(id)).length;
+          return { ...community, tagOverlapCount: overlapCount };
+        })
+      );
+
+      res.json(communitiesWithOverlap);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -257,16 +283,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const { name, description, tagIds } = req.body;
+
+      if (!tagIds || !Array.isArray(tagIds) || tagIds.length === 0) {
+        return res.status(400).json({ message: "At least one tag is required" });
+      }
+      if (tagIds.length > 5) {
+        return res.status(400).json({ message: "Communities can have a maximum of 5 tags" });
+      }
+
       const community = await storage.createCommunity({
         name,
         description,
         creatorId: user.id,
       });
 
-      // Set community tags if provided
-      if (tagIds && Array.isArray(tagIds) && tagIds.length > 0) {
-        await storage.setCommunityTags(community.id, tagIds);
-      }
+      await storage.setCommunityTags(community.id, tagIds);
 
       await storage.joinCommunity(user.id, community.id);
       
