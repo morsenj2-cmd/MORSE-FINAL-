@@ -82,6 +82,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Desktop} />
       <Route path="/sso-callback" component={AuthenticateWithRedirectCallback} />
+      <Route path="/sign-in" component={AuthenticateWithRedirectCallback} />
       <Route path="/about" component={AboutUs} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/blog" component={Blog} />
