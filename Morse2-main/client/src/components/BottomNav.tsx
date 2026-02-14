@@ -113,6 +113,14 @@ export const BottomNav = ({ activePage }: BottomNavProps): JSX.Element => {
               isActive("/messages") ? "text-teal-400" : "text-gray-300"
             }`}>Messages</span>
           </Link>
+        
+          <Link href="/requests">
+            <span className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              isActive("/requests") ? "text-teal-400" : "text-gray-300"
+            }`}>
+            Requests
+             </span>
+          </Link>
 
           <Link href="/communities">
             <span className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${

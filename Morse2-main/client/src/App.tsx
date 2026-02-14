@@ -1,3 +1,4 @@
+import { RequestsPage } from "@/pages/RequestsPage";
 import { Switch, Route, Redirect } from "wouter";
 import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
@@ -80,6 +81,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 function Router() {
   return (
     <Switch>
+      <Route path="/requests" component={RequestsPage} />
       <Route path="/" component={Desktop} />
       <Route path="/sso-callback" component={AuthenticateWithRedirectCallback} />
       <Route path="/sign-in" component={AuthenticateWithRedirectCallback} />
